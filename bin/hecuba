@@ -19,13 +19,13 @@ end.parse!
 begin
   hecuba = Hecuba::Connection.new conn_string, keyspace
 rescue Hecuba::CassandraNotRunning => e
-  puts e
+  puts "Critical: #{e}"
   exit 2
 rescue Hecuba::NoKeySpace => e
-  puts e
+  puts "Warning: #{e}"
   exit 1
 rescue => e
-  puts e
+  puts "Da Fuq?: #{e}"
   exit 3
 end
 
