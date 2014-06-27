@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# -*- mode: ruby -*-
+
+$LOAD_PATH.push File.join(File.dirname(__FILE__), '..', 'lib')
+
+require 'hecuba'
+
+require 'optparse'
+
+conn_string = 'localhost'
+keyspace = 'system'
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$0} [options]"
+  opts.on("-c", "--connect CONNECTION_STRING", "Host to connect to; port not neccesarily neccesary")  { |c| conn_string = c.to_s }
+  opts.on("-k", "--keyspace KEYSPACE", "Keyspace to connect on start")                                { |k| keyspace = k.to_s }  
+end.parse!
+
+begin
+  hecuba = Hecuba::Connection.new conn_string, keyspace
+rescue Hecuba::CassandraNotRunning => e
+  puts e
+  exit 2
+rescue Hecuba::NoKeySpace => e
+  puts e
+  exit 1
+rescue => e
+  puts e
+  exit 3
+end
+
+puts "OK: Cassandra '#{conn_string}' and keyspace '#{keyspace}' are up"
+exit 0
